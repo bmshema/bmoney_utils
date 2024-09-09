@@ -45,7 +45,8 @@ def generate_wordlist(min_length, max_length, char_set, custom_strings, custom_p
     return wordlist
 
 def main():
-    print(f"""
+    try:
+        print(f"""
 {color.RED}---------------------   {color.BLUE} -------------------------
 {color.BLUE}▗▖  ▗▖ ▗▄▖ ▗▖ ▗▖▗▄▄▄▖    {color.RED}▗▖ ▗▖ ▗▄▖ ▗▄▄▖ ▗▄▄▄  ▗▄▄▖
 {color.BLUE}▐▛▚▞▜▌▐▌ ▐▌▐▌▗▞▘▐▌       {color.RED}▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▐▌  █▐▌   
@@ -53,64 +54,67 @@ def main():
 {color.BLUE}▐▌  ▐▌▐▌ ▐▌▐▌ ▐▌▐▙▄▄▖    {color.RED}▐▙█▟▌▝▚▄▞▘▐▌ ▐▌▐▙▄▄▀▗▄▄▞▘
 {color.RED}---------------------   {color.BLUE} -------------------------
 {color.END}""")
-    
-    char_set = ""
-    options = [
-        ("Digits", string.digits),
-        ("Lowercase letters", string.ascii_lowercase),
-        ("Uppercase letters", string.ascii_uppercase),
-        ("Special characters", string.punctuation)
-    ]
-    
-    print(color.YELLOW + "Select character sets (enter option number(s) separated by space):" + color.END)
-    for i, (name, _) in enumerate(options, 1):
-        print(f"{i}. {name}")
-    
-    selections = input(color.YELLOW + "\nEnter your choices: " + color.END).split()
-    for selection in selections:
-        if selection.isdigit() and 1 <= int(selection) <= len(options):
-            char_set += options[int(selection) - 1][1]
-    
-    if not char_set:
-        print(color.RED + "No valid selection. Using digits." + color.END)
-        char_set = string.digits
+        
+        char_set = ""
+        options = [
+            ("Digits", string.digits),
+            ("Lowercase letters", string.ascii_lowercase),
+            ("Uppercase letters", string.ascii_uppercase),
+            ("Special characters", string.punctuation)
+        ]
+        
+        print(color.YELLOW + "Select character sets (enter option number(s) separated by space):" + color.END)
+        for i, (name, _) in enumerate(options, 1):
+            print(f"{i}. {name}")
+        
+        selections = input(color.YELLOW + "\nEnter your choices: " + color.END).split()
+        for selection in selections:
+            if selection.isdigit() and 1 <= int(selection) <= len(options):
+                char_set += options[int(selection) - 1][1]
+        
+        if not char_set:
+            print(color.RED + "No valid selection. Using digits." + color.END)
+            char_set = string.digits
 
-    length_input = input(color.YELLOW + "\nEnter length or range (e.g., 4 or 4-8): " + color.END)
-    if '-' in length_input:
-        min_length, max_length = map(int, length_input.split('-'))
-    else:
-        min_length = max_length = int(length_input)
-
-    custom_strings = input(color.YELLOW + "\nEnter custom strings to add (comma-separated, or press Enter to skip): " + color.END).split(',')
-    custom_strings = [s.strip() for s in custom_strings if s.strip()]
-
-    if custom_strings:
-        print(color.YELLOW + "\nWhere should custom strings be added?" + color.END)
-        print("1. At the start of each word")
-        print("2. At the end of each word")
-        print("3. Both start and end")
-        custom_position = input(color.YELLOW + "\nEnter your choice (1/2/3): " + color.END)
-        print("\n")
-        if custom_position == '1':
-            custom_position = 'start'
-        elif custom_position == '2':
-            custom_position = 'end'
+        length_input = input(color.YELLOW + "\nEnter length or range (e.g., 4 or 4-8): " + color.END)
+        if '-' in length_input:
+            min_length, max_length = map(int, length_input.split('-'))
         else:
-            custom_position = 'both'
-    else:
-        custom_position = None
+            min_length = max_length = int(length_input)
 
-    start_time = time.time()
-    wordlist = generate_wordlist(min_length, max_length, char_set, custom_strings, custom_position)
-    end_time = time.time()
+        custom_strings = input(color.YELLOW + "\nEnter custom strings to add (comma-separated, or press Enter to skip): " + color.END).split(',')
+        custom_strings = [s.strip() for s in custom_strings if s.strip()]
 
-    print(color.GREEN + f"\nGenerated {len(wordlist)} words in {end_time - start_time:.2f} seconds." + color.END)
-    save = input(color.YELLOW + "Save to file? (y/n): " + color.END).lower()
-    if save == 'y':
-        filename = input(color.YELLOW + "\nEnter filename: " + color.END)
-        with open(filename, 'w') as f:
-            f.write('\n'.join(wordlist))
-        print(f"Wordlist saved to {filename}")
+        if custom_strings:
+            print(color.YELLOW + "\nWhere should custom strings be added?" + color.END)
+            print("1. At the start of each word")
+            print("2. At the end of each word")
+            print("3. Both start and end")
+            custom_position = input(color.YELLOW + "\nEnter your choice (1/2/3): " + color.END)
+            print("\n")
+            if custom_position == '1':
+                custom_position = 'start'
+            elif custom_position == '2':
+                custom_position = 'end'
+            else:
+                custom_position = 'both'
+        else:
+            custom_position = None
+
+        start_time = time.time()
+        wordlist = generate_wordlist(min_length, max_length, char_set, custom_strings, custom_position)
+        end_time = time.time()
+
+        print(color.GREEN + f"\nGenerated {len(wordlist)} words in {end_time - start_time:.2f} seconds." + color.END)
+        save = input(color.YELLOW + "Save to file? (y/n): " + color.END).lower()
+        if save == 'y':
+            filename = input(color.YELLOW + "\nEnter filename: " + color.END)
+            with open(filename, 'w') as f:
+                f.write('\n'.join(wordlist))
+            print(f"Wordlist saved to {filename}")
+    
+    except KeyboardInterrupt:
+        print(color.RED + "\nOperation cancelled..." + color.END)
 
 if __name__ == "__main__":
     main()

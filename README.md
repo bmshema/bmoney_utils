@@ -2,7 +2,9 @@
 ...for stuff and things
 ## Linux Stuff:
 ### appimage_updater.sh: 
-Automatically checks for updated AppImage files in a specified directory, updates the corresponding desktop shortcut file if a newer version is found, and logs the action. It's designed to be run as a daily cron job to keep the application up-to-date.
+Automatically checks for updated AppImage files in a specified directory, updates the corresponding desktop shortcut file if a newer version is found, and logs the action. It's designed to be run as a daily cron job to keep the application up-to-date. 
+
+If using this with multiple apps, put this program in separate directories with each software's appimage.
 #### Usage:
 - Change these two variables to reflect file locations on your system
 ```bash

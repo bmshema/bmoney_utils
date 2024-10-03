@@ -8,7 +8,7 @@ DESKTOP_FILE="/usr/share/applications/<your_program>.desktop"
 APP_FILE=$(basename "$DESKTOP_FILE")
 
 # Find the latest AppImage by sorting them by version and taking the latest
-latest_appimage=$(ls -1v $APPIMAGE_DIR/cursor-*.AppImage | tail -n 1)
+latest_appimage=$(ls -1v $APPIMAGE_DIR/*.AppImage | tail -n 1)
 
 # Extract the full path of the latest AppImage
 latest_exec_path=$(echo $latest_appimage)

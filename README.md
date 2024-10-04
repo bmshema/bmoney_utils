@@ -1,6 +1,6 @@
 # bmoney_utils
 ...for stuff and things
-## Linux Stuff:
+## Linux Utils:
 ### appimage_updater.sh: 
 Checks for updated AppImage files in a specified directory, updates the corresponding desktop shortcut file if a newer version is found, and logs the action. It's designed to be run as a daily cron job to keep the application up-to-date.<br />   
 *This primarily applies to software that automatically downloads its own updated AppImages, but can still be used otherwise.*  

@@ -7,6 +7,11 @@ DESKTOP_FILE="/usr/share/applications/<your_program>.desktop"
 # Extract the shortcut filename for logging
 APP_FILE=$(basename "$DESKTOP_FILE")
 
+# Function to log messages
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $1" >> /var/log/cron.logs
+}
+
 # Find the latest AppImage by sorting them by version and taking the latest
 latest_appimage=$(ls -1v $APPIMAGE_DIR/*.AppImage | tail -n 1)
 
@@ -16,22 +21,26 @@ latest_exec_path=$(echo $latest_appimage)
 # Check if we need to update the desktop file
 current_exec_path=$(grep 'Exec=' $DESKTOP_FILE | cut -d '=' -f 2-)
 
+log_message "Checking for updates to $APP_FILE"
+log_message "Current AppImage: $current_exec_path"
+log_message "Latest AppImage: $latest_exec_path"
+
 if [ "$latest_exec_path" != "$current_exec_path" ]; then
-  # Update the desktop file
-  if sudo sed -i "s|Exec=.*|Exec=$latest_exec_path|" $DESKTOP_FILE; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') Successfully updated $APP_FILE to use latest AppImage: $latest_exec_path" >> /var/log/cron.logs
-  else
-    echo "$(date '+%Y-%m-%d %H:%M:%S') Failed to update $APP_FILE. Error occurred." >> /var/log/cron.logs
-  fi
+    # Update the desktop file
+    if sudo sed -i "s|Exec=.*|Exec=$latest_exec_path|" $DESKTOP_FILE; then
+        log_message "Successfully updated $APP_FILE to use latest AppImage: $latest_exec_path"
+    else
+        log_message "Failed to update $APP_FILE. Error occurred."
+    fi
   
-  # Verification step
-  if grep -q "Exec=$latest_exec_path" $DESKTOP_FILE; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') Verified: $APP_FILE now uses the latest AppImage." >> /var/log/cron.logs
-  else
-    echo "$(date '+%Y-%m-%d %H:%M:%S') Warning: $APP_FILE update could not be verified." >> /var/log/cron.logs
-  fi
+    # Verification step
+    if grep -q "Exec=$latest_exec_path" $DESKTOP_FILE; then
+        log_message "Verified: $APP_FILE now uses the latest AppImage."
+    else
+        log_message "Warning: $APP_FILE update could not be verified."
+    fi
 else
-  echo "$(date '+%Y-%m-%d %H:%M:%S') No update needed for $APP_FILE. The latest AppImage is already in use." >> /var/log/cron.logs
+    log_message "No update needed for $APP_FILE. The latest AppImage is already in use."
 fi
 
 # Cron job for once daily at 0300

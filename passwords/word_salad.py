@@ -18,10 +18,28 @@ class color:
    END = '\033[1;37;0m'
 
 def count_lines(file_path):
+    """
+    Count the total number of lines in a file.
+    
+    Args:
+        file_path (str): Path to the file to count lines in
+        
+    Returns:
+        int: Total number of lines in the file
+    """
     with open(file_path, 'rb') as f:
         return sum(1 for _ in f)
 
 def read_wordlist(file_path):
+    """
+    Read a wordlist file with a progress bar, stripping whitespace and empty lines.
+    
+    Args:
+        file_path (str): Path to the wordlist file
+        
+    Returns:
+        list: List of words from the file with whitespace stripped
+    """
     words = []
     total_lines = count_lines(file_path)
     
@@ -36,14 +54,41 @@ def read_wordlist(file_path):
     return words
 
 def write_wordlist(words, file_path):
+    """
+    Write a list of words to a file, one word per line.
+    
+    Args:
+        words (list): List of words to write
+        file_path (str): Path to the output file
+    """
     with open(file_path, 'w') as f:
         f.write('\n'.join(words))
 
 def split_list(words, n):
+    """
+    Split a list into n approximately equal sections.
+    
+    Args:
+        words (list): List of words to split
+        n (int): Number of sections to split into
+        
+    Returns:
+        list: List of n sublists containing the split words
+    """
     k, m = divmod(len(words), n)
     return [words[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
 
 def process_section(words, action):
+    """
+    Process a section of words based on the specified action.
+    
+    Args:
+        words (list): List of words to process
+        action (str): Action to perform ('reverse', 'randomize', or 'none')
+        
+    Returns:
+        list: Processed list of words
+    """
     if action == 'reverse':
         return list(reversed(words))
     elif action == 'randomize':
@@ -53,6 +98,12 @@ def process_section(words, action):
         return words
 
 def get_action():
+    """
+    Prompt user to choose an action for processing a wordlist section.
+    
+    Returns:
+        str: Selected action ('reverse', 'randomize', or 'none')
+    """
     while True:
         action = input(color.YELLOW + "Choose action (reverse/randomize/none): " + color.END).lower()
         if action in ['reverse', 'randomize', 'none']:
@@ -60,12 +111,25 @@ def get_action():
         print(color.RED + "Invalid action. Please choose 'reverse', 'randomize', or 'none'." + color.END)
 
 def complete_path(text, state):
-    """Tab completion function for file paths"""
+    """
+    Tab completion function for file paths.
+    
+    Args:
+        text (str): Current text being typed
+        state (int): State of the tab completion
+        
+    Returns:
+        str: Next matching path for tab completion
+    """
     if '~' in text:
         text = os.path.expanduser(text)
     return [x for x in glob.glob(text+'*')][state]
 
 def main():
+    """
+    Main function that orchestrates the wordlist processing workflow.
+    Handles user input, file operations, and section processing.
+    """
     print(f"""
 {color.YELLOW}--------------------    {color.CYAN}-------------------------
 {color.CYAN}▗▖ ▗▖ ▗▄▖ ▗▄▄▖ ▗▄▄▄      {color.YELLOW}▗▄▄▖ ▗▄▖ ▗▖    ▗▄▖ ▗▄▄▄ 
